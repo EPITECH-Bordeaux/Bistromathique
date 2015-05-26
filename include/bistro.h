@@ -11,6 +11,7 @@
 # include <stdarg.h>
 # include <unistd.h>
 # include <string.h>
+# include <stdio.h>
 # include "btree.h"
 
 /*
@@ -32,17 +33,19 @@
 # define PARENT_OPEN	0
 # define PARENT_CLOSE	1
 
-# define ADD		0
-# define SUB		1
-# define MUL		2
-# define DIV		3
-# define MOD		4
+# define OP_ADD		0
+# define OP_SUB		1
+# define OP_MUL		2
+# define OP_DIV		3
+# define OP_MOD		4
 
 # define DEFAULT_ADD	'+'
 # define DEFAULT_SUB	'-'
 # define DEFAULT_MUL	'*'
 # define DEFAULT_DIV	'/'
 # define DEFAULT_MOD	'%'
+# define DEFAULT_P_OPEN	'('
+# define DEFAULT_P_CLOSE ')'
 
 # define PROP_ADD	0
 # define PROP_SUB	0
@@ -72,7 +75,7 @@ typedef char (*t_fct_valueinbase)(t_base *base, char c);
 typedef struct		s_op_def
 {
   size_t		op;
-  char			op_c;
+  char			c;
   t_op_prop		prop;
 }			t_op_def;
 
@@ -80,14 +83,20 @@ typedef struct		s_nb_op
 {
   t_node_type		type_node;
   t_op_def		*op_def;
-  char			*nbr;
+  int			level;
+  char			*nb;
   size_t		size;
   t_my_bool		is_neg;
   t_my_bool		is_alloc;
 }			t_nb_op;
 
 typedef struct		s_pars
-{  
+{
+  t_op_def		*op;
+  char			*nb;
+  size_t		nb_len;
+  t_my_bool		parsing_nb;
+  int			level;
   t_btree		*btree;
 }			t_pars;
 

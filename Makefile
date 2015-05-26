@@ -25,6 +25,7 @@ CC		= gcc
 LIBS		= -Llib/lib_btree/ -lbtree
 
 CFLAGS		= -W -Wall -Wextra -Werror
+CFLAGS		+= -Wno-variadic-macros
 CFLAGS		+= -Wno-unused-parameter
 CFLAGS		+= -ansi -pedantic
 CFLAGS		+= -std=c99
