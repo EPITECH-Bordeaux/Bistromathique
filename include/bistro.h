@@ -98,7 +98,7 @@ static const	t_op_def	op_def[] =
 typedef struct		s_nb_op
 {
   t_node_type		type_node;
-  int			op_def;
+  int			op;
   int			level;
   char			*nb;
   size_t		size;
@@ -161,6 +161,11 @@ int		reader_readfd(t_bistro *data, int fd, char *filename);
 /*
 ** PARSER
 */
+
+/* parser_btree.c */
+int		parser_btree_nb(t_bistro *data, char cas);
+int             parser_btree_op(t_bistro *data, char side);
+int		parser_btree(t_bistro *data);
 
 /* parser.c */
 int		parser(t_bistro *data, char *str, int len);
