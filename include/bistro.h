@@ -27,8 +27,13 @@
 
 # define OP_NBR		5
 
-# define TYPE_NODE_OP	0
-# define TYPE_NODE_NB	1
+# define TYPE_OP	0
+# define TYPE_NB	1
+# define TYPE_P_OPEN	2
+# define TYPE_P_CLOSE	3
+
+# define TYPE_NODE_OP	TYPE_OP
+# define TYPE_NODE_NB	TYPE_NB
 
 # define PARENT_OPEN	0
 # define PARENT_CLOSE	1
@@ -62,6 +67,7 @@ typedef struct s_base		t_base;
 
 typedef unsigned char  	t_node_type;
 typedef unsigned char	t_op_prop;
+typedef unsigned char	t_type;
 
 typedef bool (*t_fct_isinbase)(t_base *base, char c);
 typedef char (*t_fct_valueinbase)(t_base *base, char c);
@@ -86,16 +92,17 @@ typedef struct		s_nb_op
   int			level;
   char			*nb;
   size_t		size;
-  t_my_bool		is_neg;
-  t_my_bool		is_alloc;
+  bool			is_neg;
+  bool			is_alloc;
 }			t_nb_op;
 
 typedef struct		s_pars
 {
+  t_type		last_token;
   t_op_def		*op;
   char			*nb;
   size_t		nb_len;
-  t_my_bool		parsing_nb;
+  bool			parsing_nb;
   int			level;
   bool			is_end;
   t_btree		*btree;
