@@ -54,17 +54,25 @@ int		parser_type(t_bistro *data, char *str, int i)
       data->pars.parsing_nb = MY_FALSE;
       return (BI_OK);
     }
+  if (str[i] == '\n')
+    {
+      data->pars.parsing_nb = MY_FALSE;
+      data->pars.is_end = true;
+      return (BI_OK);
+    }
   if (parser_type_parent(data, str, i) == BI_OK)
     return (BI_OK);
   else if (parser_type_op(data, str, i) == BI_OK)
     return (BI_OK);
   else if (parser_type_nb(data, str, i) == BI_OK)
     return (BI_OK);
+  print_error("Unknow char: '%c'\n", str[i]);
   return (BI_ERR);
 }
 
 int		parser_init(t_pars *pars)
 {
+  pars->is_end = false;
   pars->op = NULL;
   pars->nb = NULL;
   pars->nb_len = 0;
@@ -85,14 +93,11 @@ int		parser_btree_nb(t_bistro *data, char cas)
   write(1, "nb :", 4);
   write(1, data->pars.nb, data->pars.nb_len);
   write(1, "\n", 1);
-  if (cas)
-    btree_node_add(data->pars.btree, new, RIGHT, DAD);
-  else
-    btree_node_add(data->pars.btree, new, LEFT, DAD);
+  btree_node_add(data->pars.btree, new, cas, DAD);
   return (BI_OK);
 }
 
-int		parser_btree_op(t_bistro *data, char cas)
+int		parser_btree_op(t_bistro *data, char side)
 {
   t_nb_op	*new;
 
@@ -101,27 +106,29 @@ int		parser_btree_op(t_bistro *data, char cas)
   new->op_def = data->pars.op;
   new->level = data->pars.level;
   printf("op: %c (level: %d)\n", data->pars.op->c, data->pars.level);
-  if (cas)
-    btree_node_add(data->pars.btree, new, DAD, LEFT);
-  else
-    btree_node_add(data->pars.btree, new, RIGHT, DAD);
+  btree_node_add(data->pars.btree, new, side, LEFT);
   return (BI_OK);
 }
 
 int		parser_btree(t_bistro *data)
 {
-  char		cas;
   t_node	*node;
 
   node = data->pars.btree->current;
   if (node != NULL &&
       (data->pars.level < ((t_nb_op *)(node->data))->level || 
        data->pars.op->prop < ((t_nb_op *)(node->data))->op_def->prop))
-    cas = 1;
+    {
+      parser_btree_nb(data, RIGHT);
+      while (btree_move_up(data->pars.btree));
+      parser_btree_op(data, DAD);
+    }
   else
-    cas = 0;
-  parser_btree_op(data, cas);
-  parser_btree_nb(data, cas);
+    {
+      parser_btree_op(data, RIGHT);
+      btree_move_down(data->pars.btree, RIGHT);
+      parser_btree_nb(data, LEFT);
+    }
   return (BI_OK);
 }
 
@@ -130,24 +137,20 @@ int		parser_end(t_bistro *data)
   if (data->pars.nb == NULL)
     return (BI_ERR);
   else
-    {
-      printf("ENDING\n");
-      parser_btree_nb(data, 1);
-    }
+    parser_btree_nb(data, 1);
   return (BI_OK);
 }
 
-int		parser(t_bistro *data, char *str, int len, bool is_end)
+int		parser(t_bistro *data, char *str, int len)
 {
   int       	i;
 
   i = 0;
   parser_init(&data->pars);
-  while (i < len)
+  while (i < len && data->pars.is_end == false)
     {
       if (parser_type(data, str, i) == BI_ERR)
 	return (BI_ERR);
-
       if (data->pars.nb != NULL && data->pars.op != NULL)
 	{
 	  parser_btree(data);
@@ -155,13 +158,13 @@ int		parser(t_bistro *data, char *str, int len, bool is_end)
 	}
       i = i + 1;
     }
-  if (data->pars.parsing_nb == MY_TRUE && is_end == false)
+  if (data->pars.parsing_nb == MY_TRUE && data->pars.is_end == false)
     {
       data->pars.parsing_nb = MY_FALSE;
       data->pars.nb = NULL;
       return (i - data->pars.nb_len);
     }
-  else if (is_end == true)
+  else if (data->pars.is_end == true)
     return (parser_end(data));
   return (i);
 }

@@ -97,6 +97,7 @@ typedef struct		s_pars
   size_t		nb_len;
   t_my_bool		parsing_nb;
   int			level;
+  bool			is_end;
   t_btree		*btree;
 }			t_pars;
 
@@ -146,7 +147,7 @@ int		reader_readfd(t_bistro *data, int fd, char *filename);
 */
 
 /* parser.c */
-int		parser(t_bistro *data, char *str, int len, bool is_end);
+int		parser(t_bistro *data, char *str, int len);
 
 /*
 ** UTILS
