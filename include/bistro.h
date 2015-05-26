@@ -7,6 +7,7 @@
 ** ========
 */
 
+# include <stdbool.h>
 # include <stdarg.h>
 # include <unistd.h>
 # include <string.h>
@@ -49,6 +50,7 @@
 # define PROP_DIV	1
 # define PROP_MOD	1
 
+typedef struct s_base		t_base;
 /*
 ** ===============
 ** TYPES SHORTCUTS
@@ -57,6 +59,9 @@
 
 typedef unsigned char  	t_node_type;
 typedef unsigned char	t_op_prop;
+
+typedef bool (*t_fct_isinbase)(t_base *base, char c);
+typedef char (*t_fct_valueinbase)(t_base *base, char c);
 
 /*
 ** ==========
@@ -82,15 +87,21 @@ typedef struct		s_nb_op
 }			t_nb_op;
 
 typedef struct		s_pars
-{
-  
+{  
   t_btree		*btree;
 }			t_pars;
 
+struct			s_base
+{
+  char			*basestr;
+  t_fct_isinbase	fct_isinbase;
+  t_fct_valueinbase	fct_valueinbase;
+};
+
 typedef struct		s_bistro
 {
-  t_pars		*pars;
-  char			*base;
+  t_base		base;
+  t_pars		pars;
   t_op_def		op_def[OP_NBR];
   char			parent[2];
 }			t_bistro;
@@ -107,6 +118,12 @@ typedef struct		s_bistro
 
 /* init.c */
 t_bistro	*init();
+
+/* base.c */
+bool		base_dec_isin(t_base *base, char c);
+char		base_dec_value(t_base *base, char c);
+bool		base_str_isin(t_base *base, char c);
+char		base_str_value(t_base *base, char c);
 
 /*
 ** READER

@@ -21,16 +21,15 @@ void		init_ops(t_op_def *ops)
 
 t_bistro	*init()
 {
-  t_bistro	*new;
+  t_bistro	*bi;
 
-  if ((new = malloc(sizeof(t_bistro))) == NULL)
+  if ((bi = malloc(sizeof(t_bistro))) == NULL)
     return (NULL); /* TODO: MSG ERR */
-  memset(new, 0, sizeof(t_bistro));
-  if ((new->pars = malloc(sizeof(t_pars))) == NULL)
+  memset(bi, 0, sizeof(t_bistro));
+  if ((bi->pars.btree = btree_init()) == NULL)
     return (NULL); /* TODO: MSG ERR */
-  if ((new->pars->btree = btree_init()) == NULL)
-    return (NULL); /* TODO: MSG ERR */
-  new->base = NULL;
-  init_ops(new->op_def);
-  return (new);
+  bi->base.fct_isinbase = &base_dec_isin;
+  bi->base.fct_valueinbase = &base_dec_value;
+  init_ops(bi->op_def);
+  return (bi);
 }

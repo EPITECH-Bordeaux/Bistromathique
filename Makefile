@@ -7,6 +7,7 @@ SRCS_UTILS	= xalloc.c				\
 
 SRCS		= main.c				\
 		  init.c				\
+		  base.c				\
 		  $(addprefix utils/, $(SRCS_UTILS))	\
 		  $(addprefix reader/, $(SRCS_READER))	\
 		  $(addprefix parser/, $(SRCS_PARSER))
@@ -24,9 +25,9 @@ CC		= gcc
 LIBS		= -Llib/lib_btree/ -lbtree
 
 CFLAGS		= -W -Wall -Wextra -Werror
-CFLAGS		+= -Wno-variadic-macros
 CFLAGS		+= -Wno-unused-parameter
-CFLAGS		+= -pedantic
+CFLAGS		+= -ansi -pedantic
+CFLAGS		+= -std=c99
 CFLAGS		+= -Ofast
 CFLAGS		+= -Iinclude -Ilib/lib_btree/include
 CFLAGS		+= $(LIBS)
