@@ -16,11 +16,11 @@ int		parser_type_op(t_bistro *data, char *str, int i)
   int		j;
 
   j = 0;
-  while (j < OP_NBR && data->op_def[j].c != str[i])
+  while (j < OP_NBR && op_def[j].c != str[i])
     j += 1;
-  if (j >= OP_NBR || (j < OP_NBR && data->pars.op != NULL))
+  if (j >= OP_NBR || (j < OP_NBR && data->pars.op != -1))
     return (BI_ERR);
-  data->pars.op = &data->op_def[j];
+  data->pars.op = j;
   data->pars.parsing_nb = false;
   return (BI_OK);
 }
@@ -72,7 +72,7 @@ int		parser_type(t_bistro *data, char *str, int i)
 int		parser_init(t_pars *pars)
 {
   pars->is_end = false;
-  pars->op = NULL;
+  pars->op = -1;
   pars->nb = NULL;
   pars->nb_len = 0;
   pars->parsing_nb = false;
@@ -104,7 +104,6 @@ int		parser_btree_op(t_bistro *data, char side)
   new->type_node = TYPE_NODE_OP;
   new->op_def = data->pars.op;
   new->level = data->pars.level;
-  printf("op: %c (level: %d)\n", data->pars.op->c, data->pars.level);
   btree_node_add(data->pars.btree, new, side, LEFT);
   return (BI_OK);
 }
@@ -116,7 +115,8 @@ int		parser_btree(t_bistro *data)
   node = data->pars.btree->current;
   if (node != NULL &&
       (data->pars.level < ((t_nb_op *)(node->data))->level || 
-       data->pars.op->prop < ((t_nb_op *)(node->data))->op_def->prop))
+       op_def[data->pars.op].prop <
+       op_def[((t_nb_op *)(node->data))->op_def].prop))
     {
       parser_btree_nb(data, RIGHT);
       while (btree_move_up(data->pars.btree));
@@ -138,6 +138,7 @@ int		parser_end(t_bistro *data, int i)
   else
     parser_btree_nb(data, 1);
   btree_reset(data->pars.btree);
+  data->pars.last_token = TYPE_START;
   return (i);
 }
 
@@ -147,11 +148,13 @@ int		parser(t_bistro *data, char *str, int len)
 
   i = 0;
   parser_init(&data->pars);
+  if (len == 0)
+    data->pars.is_end = true;
   while (i < len && data->pars.is_end == false)
     {
       if (parser_type(data, str, i) == BI_ERR)
 	return (BI_ERR);
-      if (data->pars.nb != NULL && data->pars.op != NULL)
+      if (data->pars.nb != NULL && data->pars.op != -1)
 	{
 	  parser_btree(data);
 	  parser_init(&data->pars);

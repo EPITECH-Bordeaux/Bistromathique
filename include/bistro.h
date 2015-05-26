@@ -31,6 +31,7 @@
 # define TYPE_NB	1
 # define TYPE_P_OPEN	2
 # define TYPE_P_CLOSE	3
+# define TYPE_START	4
 
 # define TYPE_NODE_OP	TYPE_OP
 # define TYPE_NODE_NB	TYPE_NB
@@ -85,10 +86,19 @@ typedef struct		s_op_def
   t_op_prop		prop;
 }			t_op_def;
 
+static const	t_op_def	op_def[] =
+  {
+    {OP_ADD, DEFAULT_ADD, PROP_ADD},
+    {OP_SUB, DEFAULT_SUB, PROP_SUB},
+    {OP_MUL, DEFAULT_MUL, PROP_MUL},
+    {OP_DIV, DEFAULT_DIV, PROP_DIV},
+    {OP_MOD, DEFAULT_MOD, PROP_MOD}
+  };
+
 typedef struct		s_nb_op
 {
   t_node_type		type_node;
-  t_op_def		*op_def;
+  int			op_def;
   int			level;
   char			*nb;
   size_t		size;
@@ -99,7 +109,7 @@ typedef struct		s_nb_op
 typedef struct		s_pars
 {
   t_type		last_token;
-  t_op_def		*op;
+  int			op;
   char			*nb;
   size_t		nb_len;
   bool			parsing_nb;
@@ -119,7 +129,6 @@ typedef struct		s_bistro
 {
   t_base		base;
   t_pars		pars;
-  t_op_def		op_def[OP_NBR];
   char			parent[2];
 }			t_bistro;
 
