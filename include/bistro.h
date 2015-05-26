@@ -21,7 +21,7 @@
 # define BI_OK		0
 # define BI_ERR		-1
 
-# define READER_BUFSIZE	4096;
+# define READER_BUFSIZE	4096
 
 # define OP_NBR		5
 
@@ -109,11 +109,18 @@ typedef struct		s_bistro
 t_bistro	*init();
 
 /*
+** READER
+*/
+
+/* reader.c */
+int		reader_readfd(t_bistro *data, int fd, char *filename);
+
+/*
 ** PARSER
 */
 
 /* parser.c */
-int		parser(t_bistro *data, char *str, int len);
+int		parser(t_bistro *data, char *str, int len, int is_end);
 
 /*
 ** UTILS

@@ -1,3 +1,5 @@
+SRCS_READER	= reader.c
+
 SRCS_PARSER	= parser.c
 
 SRCS_UTILS	= xalloc.c				\
@@ -6,6 +8,7 @@ SRCS_UTILS	= xalloc.c				\
 SRCS		= main.c				\
 		  init.c				\
 		  $(addprefix utils/, $(SRCS_UTILS))	\
+		  $(addprefix reader/, $(SRCS_READER))	\
 		  $(addprefix parser/, $(SRCS_PARSER))
 
 OBJS		= $(addprefix src/, $(SRCS:.c=.o))
