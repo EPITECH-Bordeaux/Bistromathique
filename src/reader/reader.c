@@ -45,6 +45,8 @@ int	reader_readfd(t_bistro *data, int fd, char *filename)
   remaining = 0;
   while ((rlen = read(fd, buf + remaining, bufsize - remaining)) >= 0)
     {
+      if (rlen > 0 && buf[rlen - 1] == '\n')
+	rlen--;
       readed = parser(data, buf, rlen + remaining, (rlen == 0));
       if (readed < 0)
 	return (BI_ERR);
