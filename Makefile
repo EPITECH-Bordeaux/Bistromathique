@@ -1,6 +1,7 @@
 SRCS_PARSER	= parser.c
 
-SRCS_UTILS	= xalloc.c
+SRCS_UTILS	= xalloc.c				\
+		  print_error.c
 
 SRCS		= main.c				\
 		  init.c				\

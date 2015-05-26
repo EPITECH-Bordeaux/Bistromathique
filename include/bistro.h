@@ -7,6 +7,7 @@
 ** ========
 */
 
+# include <stdarg.h>
 # include <unistd.h>
 # include <string.h>
 # include "btree.h"
@@ -119,5 +120,8 @@ int		parser(t_bistro *data, char *str, int len);
 /* xalloc.c */
 void		*xmalloc(size_t n);
 void		*xrealloc(void *p, size_t n);
+
+/* print_error.c */
+void		printf_error(char *format, ...);
 
 #endif /* !BISTRO_H_ */
