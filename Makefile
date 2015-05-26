@@ -1,4 +1,8 @@
-SRCS		= main.c
+PARSER		= parser.c
+
+SRCS		= main.c				\
+		  init.c				\
+		  $(addprefix parser/, $(PARSER))
 
 OBJS		= $(addprefix src/, $(SRCS:.c=.o))
 
