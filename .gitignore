@@ -1,3 +1,9 @@
+### Binaries ###
+Bistromathique
+
+### Git ###
+*.orig
+
 ### C ###
 # Object files
 *.o
