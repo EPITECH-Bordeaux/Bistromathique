@@ -1,9 +1,13 @@
 #include "bistro.h"
 
-/* TODO: "int pars_reset(t_pars *pars)" */
-
 int		parser_type_nb(t_bistro *data, char *str, int i)
 {
+  if (data->base.fct_isinbase(&data->base, str[i]) == false)
+    return (BI_ERR);
+  if (data->pars.parsing_nb == MY_FALSE)
+    data->pars.nb = str + i;
+  data->pars.nb_len += 1;
+  data->pars.parsing_nb = MY_TRUE;
   return (BI_OK);
 }
 
@@ -143,6 +147,7 @@ int		parser(t_bistro *data, char *str, int len, bool is_end)
     {
       if (parser_type(data, str, i) == BI_ERR)
 	return (BI_ERR);
+
       if (data->pars.nb != NULL && data->pars.op != NULL)
 	{
 	  parser_btree(data);
@@ -150,13 +155,13 @@ int		parser(t_bistro *data, char *str, int len, bool is_end)
 	}
       i = i + 1;
     }
-  if (data->pars.parsing_nb == MY_TRUE && is_end == 0)
+  if (data->pars.parsing_nb == MY_TRUE && is_end == false)
     {
       data->pars.parsing_nb = MY_FALSE;
       data->pars.nb = NULL;
       return (i - data->pars.nb_len);
     }
-  else if (is_end != 0)
+  else if (is_end == true)
     return (parser_end(data));
   return (i);
 }
