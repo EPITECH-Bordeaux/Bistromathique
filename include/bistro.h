@@ -122,6 +122,6 @@ void		*xmalloc(size_t n);
 void		*xrealloc(void *p, size_t n);
 
 /* print_error.c */
-void		printf_error(char *format, ...);
+void		print_error(char *format, ...);
 
 #endif /* !BISTRO_H_ */
