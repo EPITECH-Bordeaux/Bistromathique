@@ -1,8 +1,11 @@
-PARSER		= parser.c
+SRCS_PARSER	= parser.c
+
+SRCS_UTILS	= xalloc.c
 
 SRCS		= main.c				\
 		  init.c				\
-		  $(addprefix parser/, $(PARSER))
+		  $(addprefix utils/, $(SRCS_UTILS))	\
+		  $(addprefix parser/, $(SRCS_PARSER))
 
 OBJS		= $(addprefix src/, $(SRCS:.c=.o))
 
@@ -26,23 +29,26 @@ CFLAGS		+= $(LIBS)
 
 LDFLAGS		+= $(LIBS)
 
-LIB_BTREE	= make -C lib/lib_btree/
+LBTREE_NAME	= lib/lib_btree/libbtree.a
+LBTREE_MAKE	= make -C lib/lib_btree/
 
-$(PROJECT):	makelib $(NAME)
+$(PROJECT):	$(LBTREE_NAME) $(NAME)
 
 $(NAME):	$(OBJS)
 		$(CC) $(OBJS) -o $(NAME) $(LDFLAGS)
 
-makelib:
-		$(LIB_BTREE)
+$(LBTREE_NAME):
+		$(LBTREE_MAKE)
 
 all:		$(PROJECT)
 
 clean:
 		$(RM) $(OBJS)
+		$(LBTREE_MAKE) clean
 
 fclean:		clean
 		$(RM) $(NAME)
+		$(LBTREE_MAKE) fclean
 
 re:		fclean all
 

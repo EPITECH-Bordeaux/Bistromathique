@@ -1,6 +1,7 @@
 #ifndef BISTRO_H_
 # define BISTRO_H_
 
+# include <unistd.h>
 # include <string.h>
 # include "btree.h"
 
@@ -70,11 +71,22 @@ typedef struct		s_bistro
 /*
 ** init.c
 */
-t_bistro		*init();
+t_bistro	*init();
 
 /*
 ** parser.c
 */
-int			parser(t_bistro *data, char *str, int len);
+int		parser(t_bistro *data, char *str, int len);
+
+/*
+** =====
+** UTILS
+** =====
+*/
+/*
+** xalloc.c
+*/
+void		*xmalloc(size_t n);
+void		*xrealloc(void *p, size_t n);
 
 #endif /* !BISTRO_H_ */
