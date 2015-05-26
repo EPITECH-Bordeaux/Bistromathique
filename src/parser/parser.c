@@ -1,6 +1,6 @@
 #include "bistro.h"
 
-int		parser(t_bistro *data, char *str, int len, int is_end)
+int		parser(t_bistro *data, char *str, int len, bool is_end)
 {
   int       	i;
 

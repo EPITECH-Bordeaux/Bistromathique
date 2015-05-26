@@ -137,7 +137,7 @@ int		reader_readfd(t_bistro *data, int fd, char *filename);
 */
 
 /* parser.c */
-int		parser(t_bistro *data, char *str, int len, int is_end);
+int		parser(t_bistro *data, char *str, int len, bool is_end);
 
 /*
 ** UTILS
