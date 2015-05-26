@@ -1,6 +1,6 @@
 SRCS		= main.c
 
-OBJS		= $(addprefix src/, $(SRCS:c=.o))
+OBJS		= $(addprefix src/, $(SRCS:.c=.o))
 
 PROJECT		= Bistromathique_2.0
 
