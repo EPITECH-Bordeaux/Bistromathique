@@ -41,7 +41,7 @@ all:		$(PROJECT)
 clean:
 		$(RM) $(OBJS)
 
-flcean:		clean
+fclean:		clean
 		$(RM) $(NAME)
 
 re:		fclean all
