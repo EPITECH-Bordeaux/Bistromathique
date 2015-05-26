@@ -1,9 +1,21 @@
 #ifndef BISTRO_H_
 # define BISTRO_H_
 
+/*
+** ========
+** INCLUDES
+** ========
+*/
+
 # include <unistd.h>
 # include <string.h>
 # include "btree.h"
+
+/*
+** =============
+** DEFINE MACROS
+** =============
+*/
 
 # define BI_OK		0
 # define BI_ERR		-1
@@ -34,8 +46,20 @@
 # define PROP_DIV	1
 # define PROP_MOD	1
 
+/*
+** ===============
+** TYPES SHORTCUTS
+** ===============
+*/
+
 typedef unsigned char  	t_node_type;
 typedef unsigned char	t_op_prop;
+
+/*
+** ==========
+** STRUCTURES
+** ==========
+*/
 
 typedef struct		s_op_def
 {
@@ -69,23 +93,30 @@ typedef struct		s_bistro
 }			t_bistro;
 
 /*
-** init.c
+** ==========
+** PROTOTYPES
+** ==========
 */
+
+/*
+** General
+*/
+
+/* init.c */
 t_bistro	*init();
 
 /*
-** parser.c
+** PARSER
 */
+
+/* parser.c */
 int		parser(t_bistro *data, char *str, int len);
 
 /*
-** =====
 ** UTILS
-** =====
 */
-/*
-** xalloc.c
-*/
+
+/* xalloc.c */
 void		*xmalloc(size_t n);
 void		*xrealloc(void *p, size_t n);
 
