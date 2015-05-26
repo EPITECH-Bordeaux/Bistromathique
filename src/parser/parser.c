@@ -1,6 +1,14 @@
 #include "bistro.h"
 
-int		parser(t_bistro *bistro)
+int		parser(t_bistro *data, char *str, int len)
 {
-  return (BI_OK);
+  int       	i;
+
+  i = 0;
+  while (i < len)
+    {
+
+      i = i + 1;
+    }
+  return (i);
 }
