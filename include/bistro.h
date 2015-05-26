@@ -21,6 +21,8 @@
 # define BI_OK		0
 # define BI_ERR		-1
 
+# define READER_BUFSIZE	4096;
+
 # define OP_NBR		5
 
 # define TYPE_NODE_OP	0
