@@ -1,5 +1,6 @@
 SRCS_PARSER	= parser.c				\
-		  parser_btree.c
+		  parser_btree.c			\
+		  parser_type.c
 
 SRCS_CALC	= calc_add.c				\
 		  calc_sub.c				\

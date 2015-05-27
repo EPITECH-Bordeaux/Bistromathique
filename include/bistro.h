@@ -189,6 +189,12 @@ int		parser_btree_nb(t_bistro *data, char cas);
 int             parser_btree_op(t_bistro *data, char side);
 int		parser_btree(t_bistro *data);
 
+/* parser_type.c */
+int		parser_type_nb(t_bistro *data, char *str, int i);
+int		parser_type_op(t_bistro *data, char *str, int i);
+int		parser_type_parent(t_bistro *data, char *str, int i);
+int		parser_type(t_bistro *data, char *str, int i);
+
 /* parser.c */
 int		parser(t_bistro *data, char *str, int len);
 
