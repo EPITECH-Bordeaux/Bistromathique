@@ -67,6 +67,8 @@
 # define PROP_MOD	1
 
 typedef struct s_base		t_base;
+typedef struct s_nb_op		t_nb_op;
+typedef struct s_bistro		t_bistro;
 /*
 ** ===============
 ** TYPES SHORTCUTS
@@ -79,6 +81,8 @@ typedef unsigned char	t_type;
 
 typedef bool (*t_fct_isinbase)(t_base *base, char c);
 typedef char (*t_fct_valueinbase)(t_base *base, char c);
+typedef bool (*t_fct_calc)(t_bistro *bi, t_nb_op *res, t_nb_op *nbleft,
+			   t_nb_op *nbright);
 
 /*
 ** ==========
@@ -91,18 +95,10 @@ typedef struct		s_op_def
   size_t		op;
   char			c;
   t_op_prop		prop;
+  t_fct_calc		fct_calc;
 }			t_op_def;
 
-UNUSED static t_op_def		op_def[] =
-  {
-    {OP_ADD, DEFAULT_ADD, PROP_ADD},
-    {OP_SUB, DEFAULT_SUB, PROP_SUB},
-    {OP_MUL, DEFAULT_MUL, PROP_MUL},
-    {OP_DIV, DEFAULT_DIV, PROP_DIV},
-    {OP_MOD, DEFAULT_MOD, PROP_MOD}
-  };
-
-typedef struct		s_nb_op
+struct			s_nb_op
 {
   t_node_type		type_node;
   int			op;
@@ -111,7 +107,7 @@ typedef struct		s_nb_op
   size_t		size;
   bool			is_neg;
   bool			is_alloc;
-}			t_nb_op;
+};
 
 typedef struct		s_pars
 {
@@ -140,13 +136,13 @@ typedef struct		s_opt
   int			argv_index;
 }			t_opt;
 
-typedef struct		s_bistro
+struct			s_bistro
 {
   t_opt			opt;
   t_base		base;
   t_pars		pars;
   char			parent[2];
-}			t_bistro;
+};
 
 /*
 ** ==========
@@ -155,7 +151,7 @@ typedef struct		s_bistro
 */
 
 /*
-** General
+** GENERAL
 */
 
 /* init.c */
@@ -197,6 +193,30 @@ int		parser_btree(t_bistro *data);
 int		parser(t_bistro *data, char *str, int len);
 
 /*
+** CALCULATION
+*/
+
+/* calc_add.c */
+bool		calc_add(t_bistro *bi, t_nb_op *res,
+			 t_nb_op *nbleft, t_nb_op *nbright);
+
+/* calc_sub.c */
+bool		calc_sub(t_bistro *bi, t_nb_op *res,
+			 t_nb_op *nbleft, t_nb_op *nbright);
+
+/* calc_mul.c */
+bool		calc_mul(t_bistro *bi, t_nb_op *res,
+			 t_nb_op *nbleft, t_nb_op *nbright);
+
+/* calc_div.c */
+bool		calc_div(t_bistro *bi, t_nb_op *res,
+			 t_nb_op *nbleft, t_nb_op *nbright);
+
+/* calc_mod.c */
+bool		calc_mod(t_bistro *bi, t_nb_op *res,
+			 t_nb_op *nbleft, t_nb_op *nbright);
+
+/*
 ** UTILS
 */
 
@@ -207,5 +227,19 @@ void		*xrealloc(void *p, size_t n);
 
 /* print_error.c */
 void		print_error(char *format, ...);
+
+/*
+** =========
+** VARIABLES
+** =========
+*/
+UNUSED static t_op_def		op_def[] =
+  {
+    {OP_ADD, DEFAULT_ADD, PROP_ADD, &calc_add},
+    {OP_SUB, DEFAULT_SUB, PROP_SUB, &calc_sub},
+    {OP_MUL, DEFAULT_MUL, PROP_MUL, &calc_mul},
+    {OP_DIV, DEFAULT_DIV, PROP_DIV, &calc_div},
+    {OP_MOD, DEFAULT_MOD, PROP_MOD, &calc_mod}
+  };
 
 #endif /* !BISTRO_H_ */

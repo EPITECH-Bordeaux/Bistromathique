@@ -1,6 +1,12 @@
 SRCS_PARSER	= parser.c				\
 		  parser_btree.c
 
+SRCS_CALC	= calc_add.c				\
+		  calc_sub.c				\
+		  calc_mul.c				\
+		  calc_div.c				\
+		  calc_mod.c
+
 SRCS_UTILS	= xalloc.c				\
 		  print_error.c
 
@@ -10,8 +16,9 @@ SRCS		= main.c				\
 		  options.c				\
 		  reader.c				\
 		  display.c				\
-		  $(addprefix utils/, $(SRCS_UTILS))	\
-		  $(addprefix parser/, $(SRCS_PARSER))
+		  $(addprefix parser/, $(SRCS_PARSER))	\
+		  $(addprefix calc/, $(SRCS_CALC))	\
+		  $(addprefix utils/, $(SRCS_UTILS))
 
 OBJS		= $(addprefix src/, $(SRCS:.c=.o))
 
