@@ -1,6 +1,7 @@
 SRCS_READER	= reader.c
 
-SRCS_PARSER	= parser.c
+SRCS_PARSER	= parser.c				\
+		  parser_btree.c
 
 SRCS_UTILS	= xalloc.c				\
 		  print_error.c
