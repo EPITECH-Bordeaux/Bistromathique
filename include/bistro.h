@@ -150,9 +150,6 @@ typedef struct		s_bistro
 ** ==========
 */
 
-/* affich.c */
-int		affich(t_btree *btree);
-
 /*
 ** General
 */
@@ -169,6 +166,9 @@ char		base_str_value(t_base *base, char c);
 /* options.c */
 void		options_printusage(int argc, char **argv);
 int		options_parse(t_bistro *bi, int argc, char **argv);
+
+/* display.c */
+int		display_tree(t_btree *btree);
 
 /*
 ** READER

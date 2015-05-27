@@ -10,10 +10,10 @@ SRCS		= main.c				\
 		  init.c				\
 		  base.c				\
 		  options.c				\
+		  display.c				\
 		  $(addprefix utils/, $(SRCS_UTILS))	\
 		  $(addprefix reader/, $(SRCS_READER))	\
-		  $(addprefix parser/, $(SRCS_PARSER))	\
-		  affich.c
+		  $(addprefix parser/, $(SRCS_PARSER))
 
 OBJS		= $(addprefix src/, $(SRCS:.c=.o))
 

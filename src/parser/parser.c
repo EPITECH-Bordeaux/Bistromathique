@@ -85,7 +85,7 @@ int		parser_end(t_bistro *data, int i)
     return (BI_ERR);
   else
     parser_btree_nb(data, 1);
-  affich(data->pars.btree);
+  display_tree(data->pars.btree);
   btree_reset(data->pars.btree);
   data->pars.last_token = TYPE_START;
   return (i);

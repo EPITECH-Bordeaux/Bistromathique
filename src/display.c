@@ -1,6 +1,6 @@
 #include "bistro.h"
 
-int		affich(t_btree *btree)
+int		display_tree(t_btree *btree)
 {
   t_node       	*node;
   int		nbr;
