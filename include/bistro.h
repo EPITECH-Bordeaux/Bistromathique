@@ -138,6 +138,9 @@ typedef struct		s_bistro
 ** ==========
 */
 
+/* affich.c */
+int		affich(t_btree *btree);
+
 /*
 ** General
 */

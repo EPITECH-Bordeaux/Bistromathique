@@ -11,7 +11,8 @@ SRCS		= main.c				\
 		  base.c				\
 		  $(addprefix utils/, $(SRCS_UTILS))	\
 		  $(addprefix reader/, $(SRCS_READER))	\
-		  $(addprefix parser/, $(SRCS_PARSER))
+		  $(addprefix parser/, $(SRCS_PARSER))	\
+		  affich.c
 
 OBJS		= $(addprefix src/, $(SRCS:.c=.o))
 
