@@ -133,6 +133,7 @@ typedef struct		s_opt
   bool			display_help;
   bool			read_file;
   bool			decimal_mode;
+  int			argv_index;
 }			t_opt;
 
 typedef struct		s_bistro
@@ -157,7 +158,7 @@ int		affich(t_btree *btree);
 */
 
 /* init.c */
-t_bistro	*init();
+int		init(t_bistro *bi);
 
 /* base.c */
 bool		base_dec_isin(t_base *base, char c);

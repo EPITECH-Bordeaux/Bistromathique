@@ -68,12 +68,9 @@ int	options_parse(t_bistro *bi, int argc, char **argv)
 	  return (BI_ERR);
 	}
     }
-  c = 0;
-  while (optind < argc)
-    {
-      fprintf(stderr, "TODO: end_argument[%d]=%s\n", c, argv[optind]);
-      optind++;
-      c++;
-    }
+  if (optind < argc)
+    bi->opt.argv_index = optind;
+  else
+    bi->opt.argv_index = 0;
   return (BI_OK);
 }
