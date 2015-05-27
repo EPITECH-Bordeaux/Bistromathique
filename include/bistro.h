@@ -7,9 +7,9 @@
 ** ========
 */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 # include <getopt.h>
 # include <stdbool.h>
 # include <stdarg.h>
@@ -23,6 +23,8 @@
 ** DEFINE MACROS
 ** =============
 */
+
+# define UNUSED __attribute__((unused))
 
 # define BI_OK		0
 # define BI_ERR		-1
@@ -91,7 +93,7 @@ typedef struct		s_op_def
   t_op_prop		prop;
 }			t_op_def;
 
-static t_op_def		op_def[] =
+UNUSED static t_op_def		op_def[] =
   {
     {OP_ADD, DEFAULT_ADD, PROP_ADD},
     {OP_SUB, DEFAULT_SUB, PROP_SUB},
