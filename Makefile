@@ -1,5 +1,3 @@
-SRCS_READER	= reader.c
-
 SRCS_PARSER	= parser.c				\
 		  parser_btree.c
 
@@ -10,9 +8,9 @@ SRCS		= main.c				\
 		  init.c				\
 		  base.c				\
 		  options.c				\
+		  reader.c				\
 		  display.c				\
 		  $(addprefix utils/, $(SRCS_UTILS))	\
-		  $(addprefix reader/, $(SRCS_READER))	\
 		  $(addprefix parser/, $(SRCS_PARSER))
 
 OBJS		= $(addprefix src/, $(SRCS:.c=.o))

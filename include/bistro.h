@@ -7,6 +7,9 @@
 ** ========
 */
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 # include <getopt.h>
 # include <stdbool.h>
 # include <stdarg.h>
@@ -176,6 +179,8 @@ int		display_tree(t_btree *btree);
 
 /* reader.c */
 int		reader_readfd(t_bistro *data, int fd, char *filename);
+int		reader_readfile(t_bistro *data, char *filename);
+int		reader_readstr(t_bistro *data, char *str);
 
 /*
 ** PARSER

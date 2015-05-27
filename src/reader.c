@@ -62,3 +62,26 @@ int	reader_readfd(t_bistro *data, int fd, char *filename)
     }
   return (BI_OK);
 }
+
+int	reader_readfile(t_bistro *data, char *filename)
+{
+  int	fd;
+  int	r;
+
+  fd = open(filename, O_RDONLY);
+  if (fd == -1)
+    {
+      print_error("Error while opening '%s': %m", filename);
+      return (BI_ERR);
+    }
+  r = reader_readfd(data, fd, filename);
+  close(fd);
+  return (r);
+}
+
+int	reader_readstr(t_bistro *data, char *str)
+{
+  if (parser(data, str, 2147483647) < 0)
+    return (BI_ERR);
+  return (BI_OK);
+}

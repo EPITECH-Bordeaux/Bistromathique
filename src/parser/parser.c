@@ -54,7 +54,7 @@ int		parser_type(t_bistro *data, char *str, int i)
       data->pars.parsing_nb = false;
       return (BI_OK);
     }
-  if (str[i] == '\n')
+  if (str[i] == '\n' || str[i] == 0)
     {
       data->pars.is_end = true;
       return (BI_OK);
