@@ -7,6 +7,7 @@
 ** ========
 */
 
+# include <getopt.h>
 # include <stdbool.h>
 # include <stdarg.h>
 # include <unistd.h>
@@ -22,6 +23,8 @@
 
 # define BI_OK		0
 # define BI_ERR		-1
+
+# define BI_VERSION	"1.0-snapshot"
 
 # define READER_BUFSIZE	4096
 
@@ -125,8 +128,16 @@ struct			s_base
   t_fct_valueinbase	fct_valueinbase;
 };
 
+typedef struct		s_opt
+{
+  bool			display_help;
+  bool			read_file;
+  bool			decimal_mode;
+}			t_opt;
+
 typedef struct		s_bistro
 {
+  t_opt			opt;
   t_base		base;
   t_pars		pars;
   char			parent[2];
@@ -153,6 +164,10 @@ bool		base_dec_isin(t_base *base, char c);
 char		base_dec_value(t_base *base, char c);
 bool		base_str_isin(t_base *base, char c);
 char		base_str_value(t_base *base, char c);
+
+/* options.c */
+void		options_printusage(int argc, char **argv);
+int		options_parse(t_bistro *bi, int argc, char **argv);
 
 /*
 ** READER

@@ -9,6 +9,7 @@ SRCS_UTILS	= xalloc.c				\
 SRCS		= main.c				\
 		  init.c				\
 		  base.c				\
+		  options.c				\
 		  $(addprefix utils/, $(SRCS_UTILS))	\
 		  $(addprefix reader/, $(SRCS_READER))	\
 		  $(addprefix parser/, $(SRCS_PARSER))	\
