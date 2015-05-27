@@ -29,7 +29,7 @@ CFLAGS		= -W -Wall -Wextra -Werror
 CFLAGS		+= -Wno-variadic-macros
 CFLAGS		+= -Wno-unused-parameter
 CFLAGS		+= -ansi -pedantic
-CFLAGS		+= -std=c99
+CFLAGS		+= -std=c99 -D_DEFAULT_SOURCE
 CFLAGS		+= -Ofast
 CFLAGS		+= -Iinclude -Ilib/lib_btree/include
 CFLAGS		+= $(LIBS)

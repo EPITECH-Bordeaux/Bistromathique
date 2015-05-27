@@ -31,8 +31,6 @@
 
 # define READER_BUFSIZE	4096
 
-# define OP_NBR		5
-
 # define TYPE_OP	0
 # define TYPE_NB	1
 # define TYPE_P_OPEN	2
@@ -45,6 +43,7 @@
 # define PARENT_OPEN	0
 # define PARENT_CLOSE	1
 
+# define OP_NBR         5
 # define OP_ADD		0
 # define OP_SUB		1
 # define OP_MUL		2
@@ -92,7 +91,7 @@ typedef struct		s_op_def
   t_op_prop		prop;
 }			t_op_def;
 
-static const	t_op_def	op_def[] =
+static t_op_def		op_def[] =
   {
     {OP_ADD, DEFAULT_ADD, PROP_ADD},
     {OP_SUB, DEFAULT_SUB, PROP_SUB},
@@ -161,6 +160,7 @@ typedef struct		s_bistro
 int		init(t_bistro *bi);
 
 /* base.c */
+int		base_update(t_base *base, char *str);
 bool		base_dec_isin(t_base *base, char c);
 char		base_dec_value(t_base *base, char c);
 bool		base_str_isin(t_base *base, char c);
@@ -199,6 +199,7 @@ int		parser(t_bistro *data, char *str, int len);
 */
 
 /* xalloc.c */
+void		xalloc_err();
 void		*xmalloc(size_t n);
 void		*xrealloc(void *p, size_t n);
 

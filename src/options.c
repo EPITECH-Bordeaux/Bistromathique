@@ -23,6 +23,39 @@ Author(s): Nathan Poirier <nathan@poirier.io>,\n\
            Timothy Greil <timothy.greil@epitech.eu>\n");
 }
 
+int	option_setop(t_bistro *bi, int op, char c)
+{
+  if (op < 0 || op >= OP_NBR)
+    {
+      print_error("Operator: You try to change an operator that doesn't \
+exist");
+      return (BI_ERR);
+    }
+  op_def[op].c = c;
+  return (BI_OK);
+}
+
+int	option_setops(t_bistro *bi, char *ops)
+{
+  int	i;
+
+  i = 0;
+  while (ops[i])
+    {
+      if (option_setop(bi, i, ops[i]) == BI_ERR)
+	return (BI_ERR);
+      i++;
+    }
+  /* '--operators' must change at least 4 operators (add, sub, mul, div).
+     Others are optionnal. */
+  if (i < 4)
+    {
+      print_error("Operators: You must specify at least 4 operators");
+      return (BI_ERR);
+    }
+  return (BI_OK);
+}
+
 int	options_parse(t_bistro *bi, int argc, char **argv)
 {
   int	c;
@@ -52,15 +85,30 @@ int	options_parse(t_bistro *bi, int argc, char **argv)
       if (c == 'h')
 	bi->opt.display_help = true;
       else if (c == 'b')
-	fprintf(stderr, "TODO: base=%s\n", optarg);
+	{
+	  if (base_update(&bi->base, optarg) == BI_ERR)
+	    return (BI_ERR);
+	}
       else if (c == 'f')
 	bi->opt.read_file = true;
       else if (c == 'd')
 	bi->opt.decimal_mode = true;
       else if (c == 'o')
-	fprintf(stderr, "TODO: operators=%s\n", optarg);
+	{
+	  if (option_setops(bi, optarg) == BI_ERR)
+	    return (BI_ERR);
+	}
       else if (c >= opt_op_offset && c <= opt_op_offset + OP_MOD)
-	fprintf(stderr, "TODO: operator-?=%s\n", optarg);
+	{
+	  if (strlen(optarg) != 1)
+	    {
+	      print_error("option '--%s' require a single caracter",
+			  long_options[opt_index].name);
+	      return (BI_ERR);
+	    }
+	  if (option_setop(bi, c - opt_op_offset, optarg[0]) == BI_ERR)
+	    return (BI_ERR);
+	}
       else
 	{
 	  fprintf(stderr, "Try '%s --help' for more information.\n",
