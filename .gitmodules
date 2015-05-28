@@ -1,3 +1,0 @@
-[submodule "lib/lib_btree"]
-	path = lib/lib_btree
-	url = git@github.com:Timothth/lib_btree.git
