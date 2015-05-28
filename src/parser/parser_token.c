@@ -39,8 +39,8 @@ int		parser_token_parent_close(t_bistro *bi, char *str, int pos)
 int		parser_token_nb(t_bistro *bi, char *str, int *pos, int len_str)
 {
   bi->pars.len_nb = 0;
-  while (bi->base.fct_isinbase(&bi->base, str[*pos + bi->pars.len_nb]) == true &&
-	 *pos + bi->pars.len_nb < len_str)
+  while ( *pos + bi->pars.len_nb < len_str &&
+	  bi->base.fct_isinbase(&bi->base, str[*pos + bi->pars.len_nb]) == true)
     bi->pars.len_nb += 1;
   if (bi->pars.len_nb == 0)
     return (TOKEN_ERROR);

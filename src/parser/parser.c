@@ -4,6 +4,7 @@ int		parser_btree_op(t_bistro *bi)
 {
   t_bt		*new;
 
+  printf("%c\n", op_def[bi->pars.op].c);
   new = xmalloc(sizeof(t_bt));
   new->type_node = TYPE_NODE_OP;
   new->data.op = bi->pars.op;
@@ -17,6 +18,8 @@ int		parser_btree_nb(t_bistro *bi)
 {
   t_bt		*new;
 
+  write(1, bi->pars.nb, bi->pars.len_nb);
+  write(1, "\n", 1);
   new = xmalloc(sizeof(t_bt));
   new->type_node = TYPE_NODE_NB;
   new->data.nb = bi->pars.nb;
@@ -72,19 +75,16 @@ int		parser(t_bistro *bi, char *str, int len_str)
 	return (BI_ERR);
       if (bi->pars.op != -1)
 	{
-	  printf("%c\n", op_def[bi->pars.op].c);
 	  parser_btree_op(bi);	 
 	  bi->pars.op = -1;
 	}
       if (bi->pars.nb != NULL)
-	{
-	  write(1, bi->pars.nb, bi->pars.len_nb);
-	  write(1, "\n", 1);	    
+	{	    
 	  parser_btree_nb(bi);	 
 	  bi->pars.nb = NULL;
 	  bi->pars.len_nb = 0;
 	}
-      pos += 1;
+      pos += 1;      
     }
   if (bi->pars.token == TOKEN_END && bi->pars.level != 0)
     printf("Warning: Missing parent '%c'\n", bi->parent[PARENT_CLOSE]);

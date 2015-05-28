@@ -27,7 +27,7 @@ NAME		= Bistromathique
 
 RM		= rm -f
 
-CC		= gcc
+CC		= gcc -g3 # WARNING -g3
 
 LIBS		=
 
