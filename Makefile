@@ -1,6 +1,5 @@
 SRCS_PARSER	= parser.c				\
-		  parser_btree.c			\
-		  parser_type.c
+		  parser_token.c
 
 SRCS_CALC	= calc_add.c				\
 		  calc_sub.c				\
@@ -16,7 +15,6 @@ SRCS		= main.c				\
 		  base.c				\
 		  options.c				\
 		  reader.c				\
-		  display.c				\
 		  $(addprefix parser/, $(SRCS_PARSER))	\
 		  $(addprefix calc/, $(SRCS_CALC))	\
 		  $(addprefix utils/, $(SRCS_UTILS))
@@ -31,39 +29,31 @@ RM		= rm -f
 
 CC		= gcc
 
-LIBS		= -Llib/lib_btree/ -lbtree
+LIBS		=
 
 CFLAGS		= -W -Wall -Wextra -Werror
 CFLAGS		+= -Wno-variadic-macros
 CFLAGS		+= -Wno-unused-parameter
 CFLAGS		+= -ansi -pedantic
-CFLAGS		+= -std=c99 -D_DEFAULT_SOURCE
+CFLAGS		+= -std=c99 -D_BSD_SOURCE
 CFLAGS		+= -Ofast
-CFLAGS		+= -Iinclude -Ilib/lib_btree/include
+CFLAGS		+= -Iinclude
 CFLAGS		+= $(LIBS)
 
 LDFLAGS		+= $(LIBS)
 
-LBTREE_NAME	= lib/lib_btree/libbtree.a
-LBTREE_MAKE	= make -C lib/lib_btree/
-
-$(PROJECT):	$(LBTREE_NAME) $(NAME)
+$(PROJECT):	$(NAME)
 
 $(NAME):	$(OBJS)
 		$(CC) $(OBJS) -o $(NAME) $(LDFLAGS)
-
-$(LBTREE_NAME):
-		$(LBTREE_MAKE)
 
 all:		$(PROJECT)
 
 clean:
 		$(RM) $(OBJS)
-		$(LBTREE_MAKE) clean
 
 fclean:		clean
 		$(RM) $(NAME)
-		$(LBTREE_MAKE) fclean
 
 re:		fclean all
 

@@ -16,7 +16,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <stdio.h>
-# include "btree.h"
+# include <stdlib.h>
 
 /*
 ** =============
@@ -33,14 +33,18 @@
 
 # define READER_BUFSIZE	4096
 
-# define TYPE_OP	0
-# define TYPE_NB	1
-# define TYPE_P_OPEN	2
-# define TYPE_P_CLOSE	3
-# define TYPE_START	4
+# define TOKEN_ERROR    0
+# define TOKEN_NB       1
+# define TOKEN_OP       2
+# define TOKEN_P_OPEN   3
+# define TOKEN_P_CLOSE  4
+# define TOKEN_ESPACE   5
+# define TOKEN_START    6
+# define TOKEN_END      7
+# define TOKEN_REBUFF   8
 
-# define TYPE_NODE_OP	TYPE_OP
-# define TYPE_NODE_NB	TYPE_NB
+# define TYPE_NODE_OP	TOKEN_OP
+# define TYPE_NODE_NB	TOKEN_NB
 
 # define PARENT_OPEN	0
 # define PARENT_CLOSE	1
@@ -100,25 +104,31 @@ typedef struct		s_op_def
 
 struct			s_nb_op
 {
-  t_node_type		type_node;
   int			op;
   int			level;
   char			*nb;
-  size_t		size;
+  size_t		len_nb;
   bool			is_neg;
-  bool			is_alloc;
 };
+
+typedef struct          s_bt
+{
+  t_node_type           type_node;
+  t_nb_op               data;
+  struct s_bt           *dad;
+  struct s_bt           *left;
+  struct s_bt           *right;
+}                       t_bt;
 
 typedef struct		s_pars
 {
-  t_type		last_token;
-  int			op;
-  char			*nb;
-  size_t		nb_len;
-  bool			parsing_nb;
-  int			level;
-  bool			is_end;
-  t_btree		*btree;
+  char                  token;
+  int                   len_nb;
+  char                  *nb;
+  bool                  is_neg;
+  int                   op;
+  int                   level;
+  t_bt                  *bt;
 }			t_pars;
 
 struct			s_base
@@ -168,9 +178,6 @@ char		base_str_value(t_base *base, char c);
 void		options_printusage(int argc, char **argv);
 int		options_parse(t_bistro *bi, int argc, char **argv);
 
-/* display.c */
-int		display_tree(t_btree *btree);
-
 /*
 ** READER
 */
@@ -184,19 +191,16 @@ int		reader_readstr(t_bistro *data, char *str);
 ** PARSER
 */
 
-/* parser_btree.c */
-int		parser_btree_nb(t_bistro *data, char cas);
-int             parser_btree_op(t_bistro *data, char side);
-int		parser_btree(t_bistro *data);
-
-/* parser_type.c */
-int		parser_type_nb(t_bistro *data, char *str, int i);
-int		parser_type_op(t_bistro *data, char *str, int i);
-int		parser_type_parent(t_bistro *data, char *str, int i);
-int		parser_type(t_bistro *data, char *str, int i);
+/* parser_token.c */
+int             parser_token_parent_open(t_bistro *bi, char *str, int pos);
+int             parser_token_parent_close(t_bistro *bi, char *str, int pos);
+int             parser_token_nb(t_bistro *bi, char *str, int *pos, int len_str);
+int             parser_token_op(t_bistro *bi, char *str, int pos);
+int             parser_token_end(t_bistro *bi, char *str, int pos);
 
 /* parser.c */
-int		parser(t_bistro *data, char *str, int len);
+int             parser_token(t_bistro *bi, char *str, int *pos, int len_str);
+int             parser(t_bistro *bi, char *str, int len_str);
 
 /*
 ** CALCULATION
