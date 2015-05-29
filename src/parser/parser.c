@@ -69,7 +69,8 @@ int		parser(t_bistro *bi, char *str, int len_str)
   pos = 0;
   if (len_str == 0)
     return (0);
-  if (bi->pars.token == TOKEN_START || bi->pars.token == TOKEN_END)
+  if (bi->pars.token == TOKEN_START || bi->pars.token == TOKEN_END ||
+      bi->pars.token == TOKEN_ERROR)
     {
       bi->pars.level = 0;
       bi->pars.token = TOKEN_START;
