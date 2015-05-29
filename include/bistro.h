@@ -33,6 +33,10 @@
 
 # define READER_BUFSIZE	4096
 
+# define BT_DAD		0
+# define BT_LEFT	1
+# define BT_RIGHT	2
+
 # define TOKEN_ERROR    0
 # define TOKEN_NB       1
 # define TOKEN_OP       2
@@ -49,12 +53,12 @@
 # define PARENT_OPEN	0
 # define PARENT_CLOSE	1
 
-# define OP_NBR         5
 # define OP_ADD		0
 # define OP_SUB		1
 # define OP_MUL		2
 # define OP_DIV		3
 # define OP_MOD		4
+# define OP_NBR         5
 
 # define DEFAULT_ADD	'+'
 # define DEFAULT_SUB	'-'
@@ -151,7 +155,6 @@ struct			s_bistro
   t_opt			opt;
   t_base		base;
   t_pars		pars;
-  char			parent[2];
 };
 
 /*
@@ -250,6 +253,12 @@ UNUSED static t_op_def		op_def[] =
     {OP_MUL, DEFAULT_MUL, PROP_MUL, &calc_mul},
     {OP_DIV, DEFAULT_DIV, PROP_DIV, &calc_div},
     {OP_MOD, DEFAULT_MOD, PROP_MOD, &calc_mod}
+  };
+
+UNUSED static char		parent_def[] =
+  {
+    DEFAULT_P_OPEN,
+    DEFAULT_P_CLOSE
   };
 
 #endif /* !BISTRO_H_ */

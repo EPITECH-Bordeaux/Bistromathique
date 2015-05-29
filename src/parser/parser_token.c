@@ -2,7 +2,7 @@
 
 int		parser_token_parent_open(t_bistro *bi, char *str, int pos)
 {
-  if (str[pos] != bi->parent[PARENT_OPEN])
+  if (str[pos] != parent_def[PARENT_OPEN])
     return (TOKEN_ERROR);
   bi->pars.level += 1;
   switch (bi->pars.token)
@@ -19,7 +19,7 @@ int		parser_token_parent_open(t_bistro *bi, char *str, int pos)
 
 int		parser_token_parent_close(t_bistro *bi, char *str, int pos)
 {
-  if (str[pos] != bi->parent[PARENT_CLOSE])
+  if (str[pos] != parent_def[PARENT_CLOSE])
     return (TOKEN_ERROR);
   bi->pars.level -= 1;
   if (bi->pars.level < 0)

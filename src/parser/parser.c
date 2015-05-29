@@ -11,6 +11,11 @@ int		parser_btree_op(t_bistro *bi)
   new->data.level = bi->pars.level;
   if (bi->pars.bt == NULL)
     bi->pars.bt = new;
+  else if (1)
+    bi->pars.bt->left = new;
+  else
+    bi->pars.bt->left = new;
+  bi->pars.op = -1;
   return (BI_OK);
 }
 
@@ -32,12 +37,14 @@ int		parser_btree_nb(t_bistro *bi)
   else
     while (1)
       new = new; /* TOP */
+  bi->pars.nb = NULL;
+  bi->pars.len_nb = 0;
   return (BI_OK);
 }
 
-int             parser_token(t_bistro *bi, char *str, int *pos, int len_str)
+int		parser_token(t_bistro *bi, char *str, int *pos, int len_str)
 {
-  int           ret_v;
+  int		ret_v;
 
   if (str[*pos] == ' ' || str[*pos] == '\t')
     return (bi->pars.token);
@@ -74,19 +81,13 @@ int		parser(t_bistro *bi, char *str, int len_str)
       if ((bi->pars.token = parser_token(bi, str, &pos, len_str)) == TOKEN_ERROR)
 	return (BI_ERR);
       if (bi->pars.op != -1)
-	{
-	  parser_btree_op(bi);	 
-	  bi->pars.op = -1;
-	}
+	parser_btree_op(bi);
       if (bi->pars.nb != NULL)
-	{	    
-	  parser_btree_nb(bi);	 
-	  bi->pars.nb = NULL;
-	  bi->pars.len_nb = 0;
-	}
-      pos += 1;      
+	parser_btree_nb(bi);
+      pos += 1;
     }
   if (bi->pars.token == TOKEN_END && bi->pars.level != 0)
-    printf("Warning: Missing parent '%c'\n", bi->parent[PARENT_CLOSE]);
+    printf("Warning: Missing %d parent(s) '%c'\n",
+	   bi->pars.level, parent_def[PARENT_CLOSE]);
   return (pos - bi->pars.len_nb);
 }
