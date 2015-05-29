@@ -59,6 +59,7 @@ int		parser_token(t_bistro *bi, char *str, int *pos, int len_str)
     return (TOKEN_OP);
   if (parser_token_end(bi, str, *pos) == TOKEN_END)
     return (TOKEN_END);
+  parser_token_unknow(bi, str, *pos);
   return (TOKEN_ERROR);
 }
 

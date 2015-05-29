@@ -98,3 +98,22 @@ int		parser_token_end(t_bistro *bi, char *str, int pos)
     }
   return (TOKEN_END);
 }
+
+int		parser_token_unknow(t_bistro *bi, char *str, int pos)
+{
+  int		i;
+
+  i = 0;
+  if (bi->base.fct_isinbase(&bi->base, str[pos]) == true ||
+      str[pos] == parent_def[PARENT_OPEN] ||
+      str[pos] == parent_def[PARENT_CLOSE])
+    return (TOKEN_ERROR);
+  while (i < OP_NBR)
+    {
+      if (op_def[i].c == str[pos])
+	return (TOKEN_ERROR);
+      i += 1;
+    }
+  print_error("Unknow character: '%c'", str[pos]);
+  return (TOKEN_ERROR);
+}

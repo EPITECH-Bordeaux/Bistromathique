@@ -200,6 +200,7 @@ int             parser_token_parent_close(t_bistro *bi, char *str, int pos);
 int             parser_token_nb(t_bistro *bi, char *str, int *pos, int len_str);
 int             parser_token_op(t_bistro *bi, char *str, int pos);
 int             parser_token_end(t_bistro *bi, char *str, int pos);
+int		parser_token_unknow(t_bistro *bi, char *str, int pos);
 
 /* parser.c */
 int             parser_token(t_bistro *bi, char *str, int *pos, int len_str);
