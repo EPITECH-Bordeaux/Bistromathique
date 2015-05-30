@@ -29,6 +29,9 @@ int		parser_token_parent_close(t_bistro *bi, char *str, int pos)
     }
   switch (bi->pars.token)
     {
+    case TOKEN_P_OPEN :
+      print_error("An open parenthese can't be followed by a close parenthese");
+      return (TOKEN_ERROR);
     case TOKEN_OP :
       print_error("An operator can't be followed by a close parenthese");
       return (TOKEN_ERROR);

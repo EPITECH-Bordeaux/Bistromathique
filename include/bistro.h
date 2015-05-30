@@ -33,10 +33,6 @@
 
 # define READER_BUFSIZE	4096
 
-# define BT_DAD		0
-# define BT_LEFT	1
-# define BT_RIGHT	2
-
 # define TOKEN_ERROR    0
 # define TOKEN_NB       1
 # define TOKEN_OP       2
@@ -126,6 +122,7 @@ typedef struct          s_bt
 
 typedef struct		s_pars
 {
+  char			last_node;
   char                  token;
   int                   len_nb;
   char                  *nb;
