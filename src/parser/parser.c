@@ -2,49 +2,26 @@
 
 int		parser_btree_op(t_bistro *bi)
 {
-  t_bt		*new;
+  t_nb_op	*new;
 
-  printf("IN ADDR: %p\n", (void *)bi->pars.bt);
-  new = xmalloc(sizeof(t_bt));
-  new->type_node = TYPE_NODE_OP;
-  new->data.op = bi->pars.op;
-  new->data.level = bi->pars.level;
-  if (bi->pars.token == TOKEN_P_OPEN)
-    new->data.level -= 1;
-  printf("%c (level :%d) (addr: %p)\n", op_def[bi->pars.op].c, new->data.level, (void *)new);
-  if (bi->pars.bt->type_node == TYPE_NODE_NB)
-    new->left = bi->pars.bt;
-  else if (op_def[bi->pars.bt->data.op].prop >= op_def[bi->pars.op].prop ||
-	   bi->pars.bt->data.level > bi->pars.level)
+  new = xmalloc(sizeof(t_nb_op));
+  memset(new, 0, sizeof(t_nb_op));
+
+  new->op = bi->pars.op;
+  new->level = bi->pars.level;
+
+  while (bi->pars.pile_op &&
+	 (new->level < bi->pars.pile_op->level ||
+	  (new->level == bi->pars.pile_op->level &&
+	   op_def[new->op].prop <= op_def[bi->pars.pile_op->op].prop)))
     {
-      while (bi->pars.bt->dad != NULL && (op_def[bi->pars.bt->data.op].prop >=
-				     op_def[bi->pars.op].prop ||
-				     bi->pars.bt->data.level > bi->pars.level))
-	{
-	  bi->pars.bt = bi->pars.bt->dad;
-	}
-      if (bi->pars.bt->dad == NULL &&
-	  (op_def[bi->pars.bt->data.op].prop >= op_def[bi->pars.op].prop ||
-	   bi->pars.bt->data.level > bi->pars.level))
-	{
-	  bi->pars.bt->dad = new;
-	  new->left = bi->pars.bt;
-	}
-      else
-	{
-	  new->dad = bi->pars.bt->dad;
-	  new->dad->right = new;
-	  new->left = bi->pars.bt;
-	  new->left->dad = new;
-	}
+      op_def[bi->pars.pile_op->op].fct_calc(bi, &bi->pars.pile_nb);
+      /* FREE */
+      bi->pars.pile_op = bi->pars.pile_op->next;
     }
-  else
-    {
-      new->left = bi->pars.bt->right;
-      bi->pars.bt->right = new;
-      new->dad = bi->pars.bt;
-    }
-  bi->pars.bt = new;
+  new->next = bi->pars.pile_op;
+  bi->pars.pile_op = new;
+  
   bi->pars.op = -1;
   bi->pars.last_node = TYPE_NODE_OP;
   return (BI_OK);
@@ -52,19 +29,16 @@ int		parser_btree_op(t_bistro *bi)
 
 int		parser_btree_nb(t_bistro *bi)
 {
-  t_bt		*new;
+  t_nb_op	*new;
 
-  write(1, bi->pars.nb, bi->pars.len_nb);
-  write(1, "\n", 1);
-  new = xmalloc(sizeof(t_bt));
-  new->type_node = TYPE_NODE_NB;
-  new->data.nb = bi->pars.nb;
-  new->data.is_neg = bi->pars.is_neg;
-  new->data.len_nb = bi->pars.len_nb;
-  if (bi->pars.bt == NULL)
-    bi->pars.bt = new;
-  else
-    bi->pars.bt->right = new;
+  new = xmalloc(sizeof(t_nb_op));
+  memset(new, 0, sizeof(t_nb_op));
+  new->nb = bi->pars.nb;
+  new->nbr = atoi(bi->pars.nb);
+  new->is_neg = bi->pars.is_neg;
+  new->len_nb = bi->pars.len_nb;
+  new->next = bi->pars.pile_nb;
+  bi->pars.pile_nb = new;
   bi->pars.nb = NULL;
   bi->pars.len_nb = 0;
   bi->pars.last_node = TYPE_NODE_NB;
@@ -97,31 +71,8 @@ int		parser_reinit(t_pars *pars)
   pars->level = 0;
   pars->token = TOKEN_START;
   pars->op = -1;
-  pars->bt = NULL;
-  return (BI_OK);
-}
-
-int		print_btree(t_bt *node)
-{
-  if (node->type_node == TYPE_NODE_NB)
-    {
-      write(1, "Nb :", 4);
-      write(1, node->data.nb, node->data.len_nb);
-      write(1, "\n", 1);
-    }
-  else
-    printf("Op: %c\n", op_def[node->data.op].c);
-  if (node->left)
-    {
-      printf("LEFT\n");
-      print_btree(node->left);
-    }
-  if (node->right)
-    {
-      printf("RIGHT\n");
-      print_btree(node->right);
-    }
-  printf("DAD\n");
+  pars->pile_op = NULL;
+  pars->pile_nb = NULL;
   return (BI_OK);
 }
 
@@ -149,11 +100,18 @@ int		parser(t_bistro *bi, char *str, int len_str)
     print_error("The number of open and close parentheses are not equal");
 
 
-  printf("---- BTREE ----\n");
-  while (bi->pars.bt->dad != NULL)
-    bi->pars.bt = bi->pars.bt->dad;
-  print_btree(bi->pars.bt);
-
+  if (bi->pars.token == TOKEN_END)
+    {
+      while (bi->pars.pile_op)
+	{
+	  op_def[bi->pars.pile_op->op].fct_calc(bi, &bi->pars.pile_nb);
+	  /* FREE */
+	  bi->pars.pile_op = bi->pars.pile_op->next;
+	}
+      printf("res :%d\n", bi->pars.pile_nb->nbr);
+      write(1, "\n", 1);
+      bi->pars.pile_nb = NULL;
+    }
 
 
   return (pos - bi->pars.len_nb);

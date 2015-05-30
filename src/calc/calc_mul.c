@@ -1,6 +1,8 @@
 #include "bistro.h"
 
-bool	calc_mul(t_bistro *bi, t_nb_op *res, t_nb_op *nbleft, t_nb_op *nbright)
+bool	calc_mul(t_bistro *bi, t_nb_op **pile_nb)
 {
+  (*pile_nb)->next->nbr = (*pile_nb)->nbr * (*pile_nb)->next->nbr;
+  (*pile_nb) = (*pile_nb)->next;
   return (false);
 }

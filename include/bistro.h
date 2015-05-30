@@ -70,6 +70,12 @@
 # define PROP_DIV	1
 # define PROP_MOD	1
 
+# define FCT_ADD	&calc_add
+# define FCT_SUB	&calc_sub
+# define FCT_MUL	&calc_mul
+# define FCT_DIV	&calc_div
+# define FCT_MOD	&calc_mod
+
 typedef struct s_base		t_base;
 typedef struct s_nb_op		t_nb_op;
 typedef struct s_bistro		t_bistro;
@@ -85,8 +91,7 @@ typedef unsigned char	t_type;
 
 typedef bool (*t_fct_isinbase)(t_base *base, char c);
 typedef char (*t_fct_valueinbase)(t_base *base, char c);
-typedef bool (*t_fct_calc)(t_bistro *bi, t_nb_op *res, t_nb_op *nbleft,
-			   t_nb_op *nbright);
+typedef bool (*t_fct_calc)(t_bistro *bi, t_nb_op **pile_nb);
 
 /*
 ** ==========
@@ -107,18 +112,11 @@ struct			s_nb_op
   int			op;
   int			level;
   char			*nb;
+    int			nbr;
   size_t		len_nb;
   bool			is_neg;
+  struct s_nb_op	*next;
 };
-
-typedef struct          s_bt
-{
-  t_node_type           type_node;
-  t_nb_op               data;
-  struct s_bt           *dad;
-  struct s_bt           *left;
-  struct s_bt           *right;
-}                       t_bt;
 
 typedef struct		s_pars
 {
@@ -129,7 +127,8 @@ typedef struct		s_pars
   bool                  is_neg;
   int                   op;
   int                   level;
-  t_bt                  *bt;
+  t_nb_op		*pile_op;
+  t_nb_op		*pile_nb;
 }			t_pars;
 
 struct			s_base
@@ -208,24 +207,19 @@ int             parser(t_bistro *bi, char *str, int len_str);
 */
 
 /* calc_add.c */
-bool		calc_add(t_bistro *bi, t_nb_op *res,
-			 t_nb_op *nbleft, t_nb_op *nbright);
+bool		calc_add(t_bistro *bi, t_nb_op **pile_nb);
 
 /* calc_sub.c */
-bool		calc_sub(t_bistro *bi, t_nb_op *res,
-			 t_nb_op *nbleft, t_nb_op *nbright);
+bool		calc_sub(t_bistro *bi, t_nb_op **pile_nb);
 
 /* calc_mul.c */
-bool		calc_mul(t_bistro *bi, t_nb_op *res,
-			 t_nb_op *nbleft, t_nb_op *nbright);
+bool		calc_mul(t_bistro *bi, t_nb_op **pile_nb);
 
 /* calc_div.c */
-bool		calc_div(t_bistro *bi, t_nb_op *res,
-			 t_nb_op *nbleft, t_nb_op *nbright);
+bool		calc_div(t_bistro *bi, t_nb_op **pile_nb);
 
 /* calc_mod.c */
-bool		calc_mod(t_bistro *bi, t_nb_op *res,
-			 t_nb_op *nbleft, t_nb_op *nbright);
+bool		calc_mod(t_bistro *bi, t_nb_op **pile_nb);
 
 /*
 ** UTILS
@@ -246,11 +240,11 @@ void		print_error(char *format, ...);
 */
 UNUSED static t_op_def		op_def[] =
   {
-    {OP_ADD, DEFAULT_ADD, PROP_ADD, &calc_add},
-    {OP_SUB, DEFAULT_SUB, PROP_SUB, &calc_sub},
-    {OP_MUL, DEFAULT_MUL, PROP_MUL, &calc_mul},
-    {OP_DIV, DEFAULT_DIV, PROP_DIV, &calc_div},
-    {OP_MOD, DEFAULT_MOD, PROP_MOD, &calc_mod}
+    {OP_ADD, DEFAULT_ADD, PROP_ADD, FCT_ADD},
+    {OP_SUB, DEFAULT_SUB, PROP_SUB, FCT_SUB},
+    {OP_MUL, DEFAULT_MUL, PROP_MUL, FCT_MUL},
+    {OP_DIV, DEFAULT_DIV, PROP_DIV, FCT_DIV},
+    {OP_MOD, DEFAULT_MOD, PROP_MOD, FCT_MOD}
   };
 
 UNUSED static char		parent_def[] =
