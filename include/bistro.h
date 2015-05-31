@@ -31,7 +31,7 @@
 
 # define BI_VERSION	"1.0-snapshot"
 
-# define READER_BUFSIZE	4096
+# define READER_BUFSIZE	4
 
 # define TOKEN_ERROR    0
 # define TOKEN_NB       1
@@ -76,8 +76,9 @@
 # define FCT_DIV	&calc_div
 # define FCT_MOD	&calc_mod
 
+typedef struct s_nb		t_nb;
+typedef struct s_op		t_op;
 typedef struct s_base		t_base;
-typedef struct s_nb_op		t_nb_op;
 typedef struct s_bistro		t_bistro;
 /*
 ** ===============
@@ -91,7 +92,7 @@ typedef unsigned char	t_type;
 
 typedef bool (*t_fct_isinbase)(t_base *base, char c);
 typedef char (*t_fct_valueinbase)(t_base *base, char c);
-typedef bool (*t_fct_calc)(t_bistro *bi, t_nb_op **pile_nb);
+typedef bool (*t_fct_calc)(t_bistro *bi, t_nb **pile_nb);
 
 /*
 ** ==========
@@ -107,28 +108,30 @@ typedef struct		s_op_def
   t_fct_calc		fct_calc;
 }			t_op_def;
 
-struct			s_nb_op
+struct			s_nb
+{
+  char			*nb;
+  int			nbr;
+  size_t		len_nb;
+  bool			is_neg;
+  int			pos;
+  struct s_nb		*next;
+};
+
+struct			s_op
 {
   int			op;
   int			level;
-  char			*nb;
-    int			nbr;
-  size_t		len_nb;
-  bool			is_neg;
-  struct s_nb_op	*next;
+  struct s_op		*next;
 };
 
 typedef struct		s_pars
 {
-  char			last_node;
   char                  token;
-  int                   len_nb;
-  char                  *nb;
-  bool                  is_neg;
-  int                   op;
   int                   level;
-  t_nb_op		*pile_op;
-  t_nb_op		*pile_nb;
+  int			len_last_nb;
+  t_op			*pile_op;
+  t_nb			*pile_nb;
 }			t_pars;
 
 struct			s_base
@@ -199,27 +202,32 @@ int             parser_token_end(t_bistro *bi, char *str, int pos);
 int		parser_token_unknow(t_bistro *bi, char *str, int pos);
 
 /* parser.c */
+int             parser_btree_op(t_bistro *bi, char op, int level);
+int             parser_btree_nb(t_bistro *bi, char *str,
+				int last_pos, int len_nb);
 int             parser_token(t_bistro *bi, char *str, int *pos, int len_str);
+int		parser_reinit(t_pars *pars);
+int		parser_end(t_bistro *bi, char *str, int len_str);
 int             parser(t_bistro *bi, char *str, int len_str);
 
 /*
-** CALCULATION
+** C ALCULATION
 */
 
 /* calc_add.c */
-bool		calc_add(t_bistro *bi, t_nb_op **pile_nb);
+bool		calc_add(t_bistro *bi, t_nb **pile_nb);
 
 /* calc_sub.c */
-bool		calc_sub(t_bistro *bi, t_nb_op **pile_nb);
+bool		calc_sub(t_bistro *bi, t_nb **pile_nb);
 
 /* calc_mul.c */
-bool		calc_mul(t_bistro *bi, t_nb_op **pile_nb);
+bool		calc_mul(t_bistro *bi, t_nb **pile_nb);
 
 /* calc_div.c */
-bool		calc_div(t_bistro *bi, t_nb_op **pile_nb);
+bool		calc_div(t_bistro *bi, t_nb **pile_nb);
 
 /* calc_mod.c */
-bool		calc_mod(t_bistro *bi, t_nb_op **pile_nb);
+bool		calc_mod(t_bistro *bi, t_nb **pile_nb);
 
 /*
 ** UTILS

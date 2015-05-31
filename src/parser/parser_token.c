@@ -8,10 +8,10 @@ int		parser_token_parent_open(t_bistro *bi, char *str, int pos)
   switch (bi->pars.token)
     {
     case TOKEN_P_CLOSE :
-      bi->pars.op = OP_MUL;
+      parser_btree_op(bi, OP_MUL, bi->pars.level);
       break;
     case TOKEN_NB :
-      bi->pars.op = OP_MUL;
+      parser_btree_op(bi, OP_MUL, bi->pars.level);
       break;
     }
   return (TOKEN_P_OPEN);
@@ -41,26 +41,28 @@ int		parser_token_parent_close(t_bistro *bi, char *str, int pos)
 
 int		parser_token_nb(t_bistro *bi, char *str, int *pos, int len_str)
 {
-  bi->pars.len_nb = 0;
-  while ( *pos + bi->pars.len_nb < len_str &&
-	  bi->base.fct_isinbase(&bi->base, str[*pos + bi->pars.len_nb]) == true)
-    bi->pars.len_nb += 1;
-  if (bi->pars.len_nb == 0)
+  int		len_nb;
+  
+  len_nb = 0;
+  while (*pos + len_nb < len_str &&
+	 bi->base.fct_isinbase(&bi->base, str[*pos + len_nb])
+	 == true)
+    len_nb += 1;
+  if (len_nb == 0)
     return (TOKEN_ERROR);
-  else if (bi->pars.len_nb > 0 && *pos + bi->pars.len_nb - 1 < len_str)
-    bi->pars.nb = str + *pos;
   switch (bi->pars.token)
     {
     case TOKEN_P_CLOSE :
-      bi->pars.op = OP_MUL;
+      parser_btree_op(bi, OP_MUL, bi->pars.level);
       break;
     case TOKEN_NB :
       print_error("Two numbers separed by an espace");
       return (TOKEN_ERROR);
     }
-  *pos += bi->pars.len_nb - 1;
-  if (*pos + 1 >= len_str)
+  if (*pos + len_nb >= len_str)
     return (TOKEN_REBUFF);
+  *pos += len_nb - 1;
+  parser_btree_nb(bi, str, *pos, len_nb);
   return (TOKEN_NB);
 }
 
@@ -73,7 +75,6 @@ int		parser_token_op(t_bistro *bi, char *str, int pos)
     i += 1;
   if (i >= OP_NBR)
     return (TOKEN_ERROR);
-  bi->pars.op = i;
   switch (bi->pars.token)
     {
     case TOKEN_P_OPEN :
@@ -86,6 +87,7 @@ int		parser_token_op(t_bistro *bi, char *str, int pos)
       print_error("The calcul can't start with an operator");
       return (TOKEN_ERROR);
     }
+  parser_btree_op(bi, i, bi->pars.level);
   return (TOKEN_OP);
 }
 

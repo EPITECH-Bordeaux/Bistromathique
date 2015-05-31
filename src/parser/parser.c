@@ -1,47 +1,41 @@
 #include "bistro.h"
 
-int		parser_btree_op(t_bistro *bi)
+int		parser_btree_op(t_bistro *bi, char op, int level)
 {
-  t_nb_op	*new;
+  t_op		*last;
+  t_op		*new;
 
-  new = xmalloc(sizeof(t_nb_op));
-  memset(new, 0, sizeof(t_nb_op));
-
-  new->op = bi->pars.op;
-  new->level = bi->pars.level;
-
+  new = xmalloc(sizeof(t_op));
+  new->op = op;
+  new->level = level;
   while (bi->pars.pile_op &&
 	 (new->level < bi->pars.pile_op->level ||
 	  (new->level == bi->pars.pile_op->level &&
 	   op_def[new->op].prop <= op_def[bi->pars.pile_op->op].prop)))
     {
       op_def[bi->pars.pile_op->op].fct_calc(bi, &bi->pars.pile_nb);
-      /* FREE */
+      last = bi->pars.pile_op;
       bi->pars.pile_op = bi->pars.pile_op->next;
+      free(last);
     }
   new->next = bi->pars.pile_op;
   bi->pars.pile_op = new;
-  
-  bi->pars.op = -1;
-  bi->pars.last_node = TYPE_NODE_OP;
   return (BI_OK);
 }
 
-int		parser_btree_nb(t_bistro *bi)
+int		parser_btree_nb(t_bistro *bi, char *str,
+				int last_pos, int len_nb)
 {
-  t_nb_op	*new;
+  t_nb		*new;
 
-  new = xmalloc(sizeof(t_nb_op));
-  memset(new, 0, sizeof(t_nb_op));
-  new->nb = bi->pars.nb;
-  new->nbr = atoi(bi->pars.nb);
-  new->is_neg = bi->pars.is_neg;
-  new->len_nb = bi->pars.len_nb;
+  new = xmalloc(sizeof(t_nb));
+  new->pos = last_pos - len_nb + 1;
+  new->nb = str + new->pos;
+  new->len_nb = len_nb;
+  new->nbr = atoi(new->nb);
   new->next = bi->pars.pile_nb;
+  new->is_neg = false;
   bi->pars.pile_nb = new;
-  bi->pars.nb = NULL;
-  bi->pars.len_nb = 0;
-  bi->pars.last_node = TYPE_NODE_NB;
   return (BI_OK);
 }
 
@@ -70,9 +64,25 @@ int		parser_reinit(t_pars *pars)
 {
   pars->level = 0;
   pars->token = TOKEN_START;
-  pars->op = -1;
   pars->pile_op = NULL;
   pars->pile_nb = NULL;
+  return (BI_OK);
+}
+
+int		parser_end(t_bistro *bi, char *str, int len_str)
+{
+  t_op		*last;
+  
+  while (bi->pars.pile_op)
+    {
+      op_def[bi->pars.pile_op->op].fct_calc(bi, &bi->pars.pile_nb);
+      last = bi->pars.pile_op;
+      bi->pars.pile_op = bi->pars.pile_op->next;
+      free(last);
+    }
+  printf("res :%d\n", bi->pars.pile_nb->nbr);
+  free(bi->pars.pile_nb);
+  bi->pars.pile_nb = NULL;
   return (BI_OK);
 }
 
@@ -83,36 +93,24 @@ int		parser(t_bistro *bi, char *str, int len_str)
   pos = 0;
   if (len_str == 0)
     return (0);
-  if (bi->pars.token == TOKEN_START || bi->pars.token == TOKEN_END ||
-      bi->pars.token == TOKEN_ERROR)
+  if (bi->pars.token == TOKEN_START || bi->pars.token == TOKEN_END)
     parser_reinit(&bi->pars);
   while (pos < len_str && bi->pars.token != TOKEN_END)
     {
-      if ((bi->pars.token = parser_token(bi, str, &pos, len_str)) == TOKEN_ERROR)
-	return (BI_ERR);
-      if (bi->pars.op != -1)
-	parser_btree_op(bi);
-      if (bi->pars.nb != NULL)
-	parser_btree_nb(bi);
+      if ((bi->pars.token = parser_token(bi, str, &pos, len_str)) ==
+	  TOKEN_ERROR)
+	{
+	  while (pos < len_str && parser_token_end(bi, str , pos) != TOKEN_END)
+	    pos += 1;
+	  if (pos < len_str)
+	    bi->pars.token = TOKEN_END;
+	  return (pos);
+	}
       pos += 1;
     }
   if (bi->pars.token == TOKEN_END && bi->pars.level != 0)
     print_error("The number of open and close parentheses are not equal");
-
-
   if (bi->pars.token == TOKEN_END)
-    {
-      while (bi->pars.pile_op)
-	{
-	  op_def[bi->pars.pile_op->op].fct_calc(bi, &bi->pars.pile_nb);
-	  /* FREE */
-	  bi->pars.pile_op = bi->pars.pile_op->next;
-	}
-      printf("res :%d\n", bi->pars.pile_nb->nbr);
-      write(1, "\n", 1);
-      bi->pars.pile_nb = NULL;
-    }
-
-
-  return (pos - bi->pars.len_nb);
+    parser_end(bi, str, len_str);
+  return (pos);
 }
